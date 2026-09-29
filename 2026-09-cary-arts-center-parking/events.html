@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Events and Timing - Cary Arts Center Parking</title>
+<style>
+:root{
+  --ground:#F3F5F4; --panel:#FFFFFF; --ink:#16212B; --muted:#56636E; --rule:#D3DAD9;
+  --accent:#1D5FAE; --accent-ink:#FFFFFF;
+  --go:#1C7445; --go-bg:#E0F2E7; --warn:#8A5A0B; --warn-bg:#FBEFD3; --stop:#A8322F; --stop-bg:#F8E1DF; --info-bg:#E3ECF7;
+  --bar:#16212B; --bar-ink:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#10161B; --panel:#182028; --ink:#E7ECEF; --muted:#A3B0BA; --rule:#2C3842;
+    --accent:#7DB3EE; --accent-ink:#0B1218;
+    --go:#72CC9B; --go-bg:#173326; --warn:#E8BC65; --warn-bg:#3A2D12; --stop:#F09590; --stop-bg:#3D1C1B; --info-bg:#1A2A3D;
+    --bar:#0B1116; --bar-ink:#E7ECEF;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#10161B; --panel:#182028; --ink:#E7ECEF; --muted:#A3B0BA; --rule:#2C3842;
+  --accent:#7DB3EE; --accent-ink:#0B1218;
+  --go:#72CC9B; --go-bg:#173326; --warn:#E8BC65; --warn-bg:#3A2D12; --stop:#F09590; --stop-bg:#3D1C1B; --info-bg:#1A2A3D;
+  --bar:#0B1116; --bar-ink:#E7ECEF;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--hdr,56px) + 12px)}
+body{background:var(--ground);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.55;margin:0}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:50;background:var(--panel);padding:6px 10px}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px}
+main.wrap{padding-block:24px 48px;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,7vw,3rem);font-weight:700}
+h2{font-size:1.7rem;font-weight:700;border-bottom:3px solid var(--ink);padding-bottom:4px}
+h3{font-size:1.2rem;font-weight:700}
+p{margin:0;max-width:70ch}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,summary:focus-visible,.hit:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section{display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;text-transform:uppercase;letter-spacing:.09em;font-size:.9rem;font-weight:700;color:var(--muted)}
+.date{font-size:1.15rem;font-weight:600}
+.sub,.hint{color:var(--muted);font-size:.95rem}
+.num{font-variant-numeric:tabular-nums}
+
+/* site bar */
+header.site{position:sticky;top:0;z-index:20;background:var(--bar);color:var(--bar-ink)}
+header.site .bar{max-width:1040px;margin:0 auto;padding:8px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
+.brand{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;font-weight:700;letter-spacing:.02em}
+header.site nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;max-width:100%}
+header.site nav a{color:var(--bar-ink);text-decoration:none;padding:5px 10px;border-radius:999px;font-size:.92rem;white-space:nowrap}
+header.site nav a[aria-current="page"]{background:var(--bar-ink);color:var(--bar)}
+header.top{display:flex;flex-direction:column;gap:8px}
+.facts{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.facts li{background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:3px 12px;font-size:.92rem}
+.short .lede{font-size:1.1rem}
+
+/* answers */
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.answer{background:var(--panel);border:1px solid var(--rule);border-top:5px solid var(--accent);padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.answer ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.answer .when{color:var(--muted);font-size:.93rem}
+
+/* map */
+.legend{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.93rem}
+.legend li{display:inline-flex;align-items:center;gap:7px}
+.sw{width:26px;height:12px;border-radius:3px;background:var(--c);opacity:.85;display:inline-block}
+.sw.dash{background:repeating-linear-gradient(90deg,var(--c) 0 8px,transparent 8px 13px)}
+.starkey{color:#FFD400;font-size:1.3rem;line-height:1;-webkit-text-stroke:1px #1A1A1A}
+.mapscroll{overflow:auto;max-width:100%;border:1px solid var(--rule);background:#F1F2EE;-webkit-overflow-scrolling:touch}
+.mapinner{position:relative;min-width:680px}
+svg.map{display:block;width:100%;height:auto}
+.hit{cursor:pointer}
+.hit.mark:hover rect,.hit.sel rect{stroke:#1A1A1A}
+.hit.shape:hover polygon,.hit.shape.sel polygon{fill-opacity:.55}
+.hit.shape:hover polyline:not(.hitline),.hit.shape.sel polyline:not(.hitline){stroke-opacity:1}
+.hitline{pointer-events:stroke}
+.pop{position:absolute;z-index:5;width:min(330px,calc(100% - 16px));background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-top:6px solid var(--c,#1D5FAE);box-shadow:0 8px 24px rgba(0,0,0,.25);padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.pop[hidden]{display:none}
+.pop h3{padding-right:28px}
+.pop .x{position:absolute;top:6px;right:6px;width:32px;height:32px;border:0;background:transparent;color:var(--ink);font-size:1.4rem;cursor:pointer;line-height:1}
+.pop dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0}
+.pop dt{color:var(--muted)}.pop dd{margin:0}
+.pop .more{font-weight:700}
+@media (max-width:700px){
+  .pop{position:fixed;left:8px;right:8px;bottom:8px;width:auto;max-height:60vh;overflow:auto}
+}
+
+/* totals */
+.totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.total{background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.total b{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;font-size:1.9rem;font-weight:700;line-height:1}
+.total span{font-size:.88rem;color:var(--muted)}
+
+/* place list */
+.jump,.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{font:inherit;font-size:.92rem;padding:6px 13px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer;border-radius:999px;text-decoration:none}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.controls .lab{font-size:.9rem;color:var(--muted)}
+.grpsec{gap:8px;margin-top:10px}
+.sechead{font-size:1.35rem;position:sticky;top:var(--hdr,56px);z-index:3;background:var(--ground);padding:6px 0;display:flex;align-items:baseline;gap:8px}
+.count{font-size:.95rem;color:var(--muted);font-weight:600}
+.cards{display:flex;flex-direction:column;gap:6px}
+.card{background:var(--panel);border:1px solid var(--rule);border-left:6px solid var(--rule)}
+/* adds to the page scroll padding (the header): a card jumped to must also clear its sticky section heading */
+.card{scroll-margin-top:44px}
+.card.cond .gid{color:#1A1A1A;border-radius:6px}
+.card.public{border-left-color:#127A44}.card.cond{border-left-color:#E39400}.card.rest,.card.none{border-left-color:#D2352F}
+.card summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;padding:10px 12px}
+.card summary::-webkit-details-marker{display:none}
+.card summary::after{content:"+";font-size:1.3rem;color:var(--muted);grid-column:3;grid-row:1}
+.card[open] summary::after{content:"\2212"}
+.card .meta{grid-column:2;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.88rem;color:var(--muted)}
+.nm{font-weight:700;line-height:1.3}
+.gid{grid-row:1/3;font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;font-weight:700;background:var(--c);color:#FFFFFF;min-width:48px;text-align:center;padding:4px 8px;font-size:1.05rem;border-radius:999px}
+.pill{font-size:.76rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:3px}
+.pill.public{background:var(--go-bg);color:var(--go)}.pill.cond{background:var(--warn-bg);color:var(--warn)}.pill.rest,.pill.none{background:var(--stop-bg);color:var(--stop)}
+.cbody{padding:0 14px 14px;display:flex;flex-direction:column;gap:8px;font-size:.96rem;border-top:1px dashed var(--rule);padding-top:10px}
+.cbody .where{color:var(--muted)}
+.sun{background:var(--info-bg);padding:8px 10px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px 18px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:0;align-content:start}
+.kv dt{color:var(--muted)}.kv dd{margin:0}
+.chg{color:var(--warn)}
+.src,.conf{font-size:.86rem;color:var(--muted)}
+.card:target,.card.flash{box-shadow:0 0 0 3px var(--accent)}
+
+/* alerts */
+.alerts{display:flex;flex-direction:column;gap:8px}
+.alert{border-left:5px solid var(--warn);background:var(--warn-bg)}
+.alert.stop{border-color:var(--stop);background:var(--stop-bg)}
+.alert.info{border-color:var(--accent);background:var(--info-bg)}
+.alert summary{cursor:pointer;font-weight:700;padding:10px 14px}
+.alert div{padding:0 14px 12px}
+
+/* events */
+.events{display:flex;flex-direction:column;gap:8px}
+.ev{display:grid;grid-template-columns:150px 1fr;gap:4px 16px;background:var(--panel);border:1px solid var(--rule);padding:12px 14px}
+.ev > div{display:flex;flex-direction:column;gap:4px}
+.evtime{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;font-weight:700;font-size:1.1rem}
+@media (max-width:600px){.ev{grid-template-columns:1fr}}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;font-size:1rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700}
+tr:last-child td{border-bottom:0}
+@media (max-width:760px){
+  table thead{display:none}
+  table tr{display:block;padding:10px 12px;border-bottom:1px solid var(--rule)}
+  table tr:last-child{border-bottom:0}
+  table td{display:block;padding:2px 0;border:0}
+  table td:first-child{font-weight:700}
+}
+
+/* advisories, lists, footer */
+.advs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.adv{background:var(--panel);border:1px solid var(--rule);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.adv pre{white-space:pre-wrap;font-family:system-ui,sans-serif;font-size:.95rem;margin:0;line-height:1.5;max-height:420px;overflow:auto}
+.btn{font:inherit;font-weight:700;align-self:flex-start;padding:7px 14px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:3px;cursor:pointer}
+ul.plain{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:7px;max-width:74ch}
+ul.plain.big{font-size:1.05rem}
+footer.foot{color:var(--muted);font-size:.88rem;border-top:1px solid var(--rule);padding-block:14px 32px;display:flex;flex-direction:column;gap:8px}
+footer.foot nav{display:flex;flex-wrap:wrap;gap:6px 16px}
+@media (prefers-reduced-motion:no-preference){.chip,.btn{transition:background-color .15s}html{scroll-behavior:smooth}}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="bar"><span class="brand">Cary Arts Center parking &middot; Sun Oct 4</span><nav aria-label="Guide pages"><a href="index.html">Where to park</a><a href="events.html" aria-current="page">Events and timing</a><a href="rules.html">Rules and no-parking streets</a><a href="sources.html">Sources and method</a></nav></div></header>
+<main id="main" class="wrap">
+
+<header class="top"><p class="eyebrow">Parking guide</p><h1>Events and timing</h1>
+<p class="date">Sunday, October 4, 2026, within about half a mile of the arts center</p></header>
+<section aria-labelledby="h-ev"><h2 id="h-ev">What else is on that day</h2>
+<p class="sub">Everything found that competes for the same parking, in order of start time. Crowd sizes are marked as a capacity, a published figure, or an estimate.</p>
+<div class="events"><article class="ev"><p class="evtime">8:00 and 10:30 AM</p><div><h3>Sunday services, First Baptist Church</h3><p class="sub">218 S Academy Street</p><p><b>Expected crowd:</b> Not published; no basis for an estimate</p><p>The church has the sole use of the Town&#x27;s Academy Street deck spaces until noon. Times as found in a search; confirm them on the church&#x27;s visitor page.</p><p class="src"><a href="https://www.caryfirst.com/plan-your-in-person-visit" target="_blank" rel="noopener">First Baptist visitor page</a></p></div></article><article class="ev"><p class="evtime">Morning, to about noon</p><div><h3>Sunday services, First United Methodist Church</h3><p class="sub">117 S Academy Street</p><p><b>Expected crowd:</b> Not published; no basis for an estimate</p><p>Its lot is closed to the public. Service times were not found in a published schedule.</p><p class="src"><a href="https://firstcary.com/parking/" target="_blank" rel="noopener">Church parking page</a></p></div></article><article class="ev"><p class="evtime">9:00 AM to 3:00 PM</p><div><h3>Youth soccer tournament</h3><p class="sub">Cary Elementary field, beside the arts center</p><p><b>Expected crowd:</b> About 60 to 150 cars (estimate)</p><p>No listing, organizer or permit was found in two searches. The estimate is about 60 cars for each full-size field, from a published traffic study, applied to a grass area of about 390 by 310 ft. Expect the school lots and Faculty Avenue to be full.</p><p class="src"><a href="https://www.ncsoccer.org/nc-sanctioned-tournament-page/" target="_blank" rel="noopener">Sanctioned tournament list</a> &middot; <a href="https://trid.trb.org/View/981328" target="_blank" rel="noopener">traffic study, 2010</a></p></div></article><article class="ev"><p class="evtime">12:00 PM to about 2:00 PM</p><div><h3>Film screening</h3><p class="sub">The Cary Theater, 122 E Chatham Street</p><p><b>Expected crowd:</b> Up to 137 seats (capacity)</p><p>Half a mile north. Draws on parking north of the railroad.</p><p class="src"><a href="https://thecarytheater.com/events-list/" target="_blank" rel="noopener">The Cary Theater listings</a></p></div></article><article class="ev"><p class="evtime">Early afternoon</p><div><h3>Cast and crew arrive</h3><p class="sub">Cary Arts Center</p><p><b>Expected crowd:</b> The company</p><p>The tournament&#x27;s peak. The decks are the dependable choice.</p></div></article><article class="ev"><p class="evtime">1:00 to 5:00 PM</p><div><h3>Cary Regional Library open</h3><p class="sub">315 Kildaire Farm Road</p><p><b>Expected crowd:</b> Not published; no basis for an estimate</p><p>Library-reserved deck spaces are in force from 12:30 PM.</p><p class="src"><a href="https://www.wake.gov/departments-government/libraries/locations/cary-regional-library" target="_blank" rel="noopener">Cary Regional Library hours</a></p></div></article><article class="ev"><p class="evtime">2:00 to 3:00 PM</p><div><h3>Applause! Barktoberfest youth theater show (free)</h3><p class="sub">Academy Pavilion, Downtown Cary Park</p><p><b>Expected crowd:</b> Not published; families, no basis for a number</p><p>Its audience arrives at the same time as matinee patrons. Listed by the Town and the park; a later search of a downtown events round-up did not show it, so confirm on the park calendar.</p><p class="src"><a href="https://www.carync.gov/Home/Components/News/News/17257" target="_blank" rel="noopener">Town release on the park&#x27;s October events</a> &middot; <a href="https://downtowncarypark.com/calendar" target="_blank" rel="noopener">park calendar</a></p></div></article><article class="ev"><p class="evtime">2:00 PM to about 3:00 PM</p><div><h3>Dog training class</h3><p class="sub">Park Street Courts, Downtown Cary Park</p><p><b>Expected crowd:</b> Small class (estimate)</p><p>Across Dry Avenue from the arts center. The end time is an estimate for a class of this kind.</p><p class="src"><a href="https://downtowncarypark.com/calendar" target="_blank" rel="noopener">park calendar</a></p></div></article><article class="ev"><p class="evtime">3:00 to about 5:45 PM</p><div><h3>The matinee</h3><p class="sub">Cary Arts Center, 101 Dry Avenue</p><p><b>Expected crowd:</b> Up to 395 (capacity)</p><p>Curtain 3:00 PM. Patrons arrive 2:00 to 3:00 PM and leave about 6:00 PM.</p></div></article><article class="ev"><p class="evtime">3:00 PM to about 5:00 PM</p><div><h3>Film screening</h3><p class="sub">The Cary Theater, 122 E Chatham Street</p><p><b>Expected crowd:</b> Up to 137 seats (capacity)</p><p>Starts with the matinee, half a mile north. Draws on parking north of the railroad, not on the places listed here.</p><p class="src"><a href="https://thecarytheater.com/events-list/" target="_blank" rel="noopener">The Cary Theater listings</a></p></div></article><article class="ev"><p class="evtime">5:00 to 7:00 PM</p><div><h3>Methodist youth group</h3><p class="sub">First United Methodist Church</p><p><b>Expected crowd:</b> Not published; no basis for an estimate</p></div></article><article class="ev"><p class="evtime">6:00 PM to about 8:00 PM</p><div><h3>Film screening</h3><p class="sub">The Cary Theater, 122 E Chatham Street</p><p><b>Expected crowd:</b> Up to 137 seats (capacity)</p><p>End times for the screenings assume a feature of about two hours; the films were not checked.</p><p class="src"><a href="https://thecarytheater.com/events-list/" target="_blank" rel="noopener">The Cary Theater listings</a></p></div></article><article class="ev"><p class="evtime">6:30 to 8:00 PM</p><div><h3>Jazz&#x27;d Up Sundays concert (free)</h3><p class="sub">Great Lawn Pavilion, Downtown Cary Park</p><p><b>Expected crowd:</b> Not published; a large outdoor crowd is likely, but there is no basis for a number</p><p>Arrivals meet departing patrons at the deck entrances. One older listing gave 5:30 PM; the current listings say 6:30 PM.</p><p class="src"><a href="https://downtowncarync.org/music-barkitecture-halloween-more-october-2026-in-downtown-cary/" target="_blank" rel="noopener">Downtown Cary events, October 2026</a> &middot; <a href="https://downtowncarypark.com/calendar" target="_blank" rel="noopener">park calendar</a></p></div></article></div></section>
+<section aria-labelledby="h-day"><h2 id="h-day">How the day unfolds</h2>
+<div class="tablewrap"><table id="timeline"><thead><tr><th scope="col">Time</th><th scope="col">What is happening</th><th scope="col">Effect on parking</th></tr></thead><tbody><tr><td>7:00 AM to 12:00 PM</td><td>Church services at First Baptist and First United Methodist.</td><td>The Methodist lot is closed to the public. First Baptist has the sole use of the Town's Academy Street deck spaces until noon, by a recorded easement. Both clear before cast call.</td></tr><tr><td>9:00 AM to 3:00 PM</td><td>Soccer tournament on the Cary Elementary field.</td><td>Expect all four school lots and the legal curb on Faculty Avenue to be full. The circular lot beside the arts center is part of the school's front lot.</td></tr><tr><td>Early afternoon</td><td>Cast and crew arrive.</td><td>This is the tournament's peak. The decks are the dependable choice.</td></tr><tr><td>1:00 PM</td><td>Cary Regional Library opens, until 5:00 PM.</td><td>Library-reserved deck spaces are in force from 12:30 PM.</td></tr><tr><td>2:00 to 3:00 PM</td><td>A free youth theater show at the park's Academy Pavilion and a dog training class at the Park Street Courts, both across Dry Avenue. Patrons arrive.</td><td>Extra demand on the Walnut Street deck and the Old Library lot.</td></tr><tr><td>3:00 PM</td><td>Curtain. The field rental ends. The Cary Theater, half a mile north on E Chatham Street, starts a screening.</td><td>School lots begin to empty, too late for patrons. The screening draws on parking north of the railroad, not on the groups listed here.</td></tr><tr><td>5:00 PM</td><td>Library closes. Methodist youth group meets 5:00 to 7:00 PM.</td><td>Deck demand eases.</td></tr><tr><td>5:45 to 6:15 PM</td><td>Bows end, patrons leave.</td><td>Arrivals for the 6:30 PM concert meet departing patrons at the deck entrances.</td></tr><tr><td>6:30 to 8:00 PM</td><td>Jazz'd Up Sundays concert, Great Lawn Pavilion, Downtown Cary Park.</td><td>Cast and crew leaving after strike or notes may be slow out of the deck.</td></tr></tbody></table></div></section>
+<section aria-labelledby="h-nf"><h2 id="h-nf">Checked, and not a factor</h2><ul class="plain"><li><b>The Cary Farmers Market.</b> It runs on Saturdays, 8:00 AM to noon, not on Sunday. <a href="https://downtowncarync.org/music-barkitecture-halloween-more-october-2026-in-downtown-cary/" target="_blank" rel="noopener">Source</a></li><li><b>The Cary Greenways Tour race.</b> It is on October 4, but at Fred G. Bond Metro Park, several miles away. <a href="https://www.carygreenwaystour.com/Race/Events/NC/Cary/CaryGreenwaysTour" target="_blank" rel="noopener">Source</a></li><li><b>Page-Walker Arts &amp; History Center.</b> An exhibit is on, with no timed event that day.</li><li><b>Academy Street lane closure.</b> The next closure of a northbound lane, Dry Avenue to Chatham Street, begins on Monday, October 5 at 7:00 AM, the day after, by a Town news release found in a search and not re-read.</li><li><b>Festivals, races and markets downtown.</b> None found for that Sunday.</li></ul></section>
+</main>
+<footer class="wrap foot"><p>Prepared for the stage manager&#x27;s use. Desk research only: confirm on site before sending the advisories.</p><p>All distances in feet, rounded to 5 ft. Walking times assume 3 mph.</p><nav aria-label="Guide pages, again"><a href="index.html">Where to park</a><a href="events.html" aria-current="page">Events and timing</a><a href="rules.html">Rules and no-parking streets</a><a href="sources.html">Sources and method</a></nav></footer>
+<script>
+(function(){const h=document.querySelector("header.site");if(!h)return;const f=()=>document.documentElement.style.setProperty("--hdr",h.offsetHeight+"px");f();addEventListener("resize",f);})();
+
+</script>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Rules - Cary Arts Center Parking</title>
+<style>
+:root{
+  --ground:#F3F5F4; --panel:#FFFFFF; --ink:#16212B; --muted:#56636E; --rule:#D3DAD9;
+  --accent:#1D5FAE; --accent-ink:#FFFFFF;
+  --go:#1C7445; --go-bg:#E0F2E7; --warn:#8A5A0B; --warn-bg:#FBEFD3; --stop:#A8322F; --stop-bg:#F8E1DF; --info-bg:#E3ECF7;
+  --bar:#16212B; --bar-ink:#FFFFFF;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#10161B; --panel:#182028; --ink:#E7ECEF; --muted:#A3B0BA; --rule:#2C3842;
+    --accent:#7DB3EE; --accent-ink:#0B1218;
+    --go:#72CC9B; --go-bg:#173326; --warn:#E8BC65; --warn-bg:#3A2D12; --stop:#F09590; --stop-bg:#3D1C1B; --info-bg:#1A2A3D;
+    --bar:#0B1116; --bar-ink:#E7ECEF;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#10161B; --panel:#182028; --ink:#E7ECEF; --muted:#A3B0BA; --rule:#2C3842;
+  --accent:#7DB3EE; --accent-ink:#0B1218;
+  --go:#72CC9B; --go-bg:#173326; --warn:#E8BC65; --warn-bg:#3A2D12; --stop:#F09590; --stop-bg:#3D1C1B; --info-bg:#1A2A3D;
+  --bar:#0B1116; --bar-ink:#E7ECEF;
+}
+*{box-sizing:border-box}
+html{scroll-padding-top:calc(var(--hdr,56px) + 12px)}
+body{background:var(--ground);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.55;margin:0}
+.skip{position:absolute;left:-999px}.skip:focus{left:8px;top:8px;z-index:50;background:var(--panel);padding:6px 10px}
+.wrap{max-width:1040px;margin:0 auto;padding-inline:16px}
+main.wrap{padding-block:24px 48px;display:flex;flex-direction:column;gap:40px}
+h1,h2,h3{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(2rem,7vw,3rem);font-weight:700}
+h2{font-size:1.7rem;font-weight:700;border-bottom:3px solid var(--ink);padding-bottom:4px}
+h3{font-size:1.2rem;font-weight:700}
+p{margin:0;max-width:70ch}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible,summary:focus-visible,.hit:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+section{display:flex;flex-direction:column;gap:14px}
+.eyebrow{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;text-transform:uppercase;letter-spacing:.09em;font-size:.9rem;font-weight:700;color:var(--muted)}
+.date{font-size:1.15rem;font-weight:600}
+.sub,.hint{color:var(--muted);font-size:.95rem}
+.num{font-variant-numeric:tabular-nums}
+
+/* site bar */
+header.site{position:sticky;top:0;z-index:20;background:var(--bar);color:var(--bar-ink)}
+header.site .bar{max-width:1040px;margin:0 auto;padding:8px 16px;display:flex;flex-wrap:wrap;align-items:center;gap:6px 18px}
+.brand{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;font-weight:700;letter-spacing:.02em}
+header.site nav{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;max-width:100%}
+header.site nav a{color:var(--bar-ink);text-decoration:none;padding:5px 10px;border-radius:999px;font-size:.92rem;white-space:nowrap}
+header.site nav a[aria-current="page"]{background:var(--bar-ink);color:var(--bar)}
+header.top{display:flex;flex-direction:column;gap:8px}
+.facts{list-style:none;margin:4px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.facts li{background:var(--panel);border:1px solid var(--rule);border-radius:999px;padding:3px 12px;font-size:.92rem}
+.short .lede{font-size:1.1rem}
+
+/* answers */
+.answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+.answer{background:var(--panel);border:1px solid var(--rule);border-top:5px solid var(--accent);padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.answer ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.answer .when{color:var(--muted);font-size:.93rem}
+
+/* map */
+.legend{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px 18px;font-size:.93rem}
+.legend li{display:inline-flex;align-items:center;gap:7px}
+.sw{width:26px;height:12px;border-radius:3px;background:var(--c);opacity:.85;display:inline-block}
+.sw.dash{background:repeating-linear-gradient(90deg,var(--c) 0 8px,transparent 8px 13px)}
+.starkey{color:#FFD400;font-size:1.3rem;line-height:1;-webkit-text-stroke:1px #1A1A1A}
+.mapscroll{overflow:auto;max-width:100%;border:1px solid var(--rule);background:#F1F2EE;-webkit-overflow-scrolling:touch}
+.mapinner{position:relative;min-width:680px}
+svg.map{display:block;width:100%;height:auto}
+.hit{cursor:pointer}
+.hit.mark:hover rect,.hit.sel rect{stroke:#1A1A1A}
+.hit.shape:hover polygon,.hit.shape.sel polygon{fill-opacity:.55}
+.hit.shape:hover polyline:not(.hitline),.hit.shape.sel polyline:not(.hitline){stroke-opacity:1}
+.hitline{pointer-events:stroke}
+.pop{position:absolute;z-index:5;width:min(330px,calc(100% - 16px));background:var(--panel);color:var(--ink);border:1px solid var(--rule);border-top:6px solid var(--c,#1D5FAE);box-shadow:0 8px 24px rgba(0,0,0,.25);padding:12px 14px;display:flex;flex-direction:column;gap:6px;font-size:.95rem}
+.pop[hidden]{display:none}
+.pop h3{padding-right:28px}
+.pop .x{position:absolute;top:6px;right:6px;width:32px;height:32px;border:0;background:transparent;color:var(--ink);font-size:1.4rem;cursor:pointer;line-height:1}
+.pop dl{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;margin:0}
+.pop dt{color:var(--muted)}.pop dd{margin:0}
+.pop .more{font-weight:700}
+@media (max-width:700px){
+  .pop{position:fixed;left:8px;right:8px;bottom:8px;width:auto;max-height:60vh;overflow:auto}
+}
+
+/* totals */
+.totals{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1px;background:var(--rule);border:1px solid var(--rule)}
+.total{background:var(--panel);padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.total b{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;font-size:1.9rem;font-weight:700;line-height:1}
+.total span{font-size:.88rem;color:var(--muted)}
+
+/* place list */
+.jump,.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chip{font:inherit;font-size:.92rem;padding:6px 13px;border:1px solid var(--rule);background:var(--panel);color:var(--ink);cursor:pointer;border-radius:999px;text-decoration:none}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.controls .lab{font-size:.9rem;color:var(--muted)}
+.grpsec{gap:8px;margin-top:10px}
+.sechead{font-size:1.35rem;position:sticky;top:var(--hdr,56px);z-index:3;background:var(--ground);padding:6px 0;display:flex;align-items:baseline;gap:8px}
+.count{font-size:.95rem;color:var(--muted);font-weight:600}
+.cards{display:flex;flex-direction:column;gap:6px}
+.card{background:var(--panel);border:1px solid var(--rule);border-left:6px solid var(--rule)}
+/* adds to the page scroll padding (the header): a card jumped to must also clear its sticky section heading */
+.card{scroll-margin-top:44px}
+.card.cond .gid{color:#1A1A1A;border-radius:6px}
+.card.public{border-left-color:#127A44}.card.cond{border-left-color:#E39400}.card.rest,.card.none{border-left-color:#D2352F}
+.card summary{cursor:pointer;list-style:none;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;align-items:center;padding:10px 12px}
+.card summary::-webkit-details-marker{display:none}
+.card summary::after{content:"+";font-size:1.3rem;color:var(--muted);grid-column:3;grid-row:1}
+.card[open] summary::after{content:"\2212"}
+.card .meta{grid-column:2;display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.88rem;color:var(--muted)}
+.nm{font-weight:700;line-height:1.3}
+.gid{grid-row:1/3;font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;font-weight:700;background:var(--c);color:#FFFFFF;min-width:48px;text-align:center;padding:4px 8px;font-size:1.05rem;border-radius:999px}
+.pill{font-size:.76rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:1px 7px;border-radius:3px}
+.pill.public{background:var(--go-bg);color:var(--go)}.pill.cond{background:var(--warn-bg);color:var(--warn)}.pill.rest,.pill.none{background:var(--stop-bg);color:var(--stop)}
+.cbody{padding:0 14px 14px;display:flex;flex-direction:column;gap:8px;font-size:.96rem;border-top:1px dashed var(--rule);padding-top:10px}
+.cbody .where{color:var(--muted)}
+.sun{background:var(--info-bg);padding:8px 10px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:8px 18px}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:0;align-content:start}
+.kv dt{color:var(--muted)}.kv dd{margin:0}
+.chg{color:var(--warn)}
+.src,.conf{font-size:.86rem;color:var(--muted)}
+.card:target,.card.flash{box-shadow:0 0 0 3px var(--accent)}
+
+/* alerts */
+.alerts{display:flex;flex-direction:column;gap:8px}
+.alert{border-left:5px solid var(--warn);background:var(--warn-bg)}
+.alert.stop{border-color:var(--stop);background:var(--stop-bg)}
+.alert.info{border-color:var(--accent);background:var(--info-bg)}
+.alert summary{cursor:pointer;font-weight:700;padding:10px 14px}
+.alert div{padding:0 14px 12px}
+
+/* events */
+.events{display:flex;flex-direction:column;gap:8px}
+.ev{display:grid;grid-template-columns:150px 1fr;gap:4px 16px;background:var(--panel);border:1px solid var(--rule);padding:12px 14px}
+.ev > div{display:flex;flex-direction:column;gap:4px}
+.evtime{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;font-weight:700;font-size:1.1rem}
+@media (max-width:600px){.ev{grid-template-columns:1fr}}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--rule);background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-size:.95rem}
+th,td{text-align:left;padding:8px 12px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif;font-size:1rem;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:700}
+tr:last-child td{border-bottom:0}
+@media (max-width:760px){
+  table thead{display:none}
+  table tr{display:block;padding:10px 12px;border-bottom:1px solid var(--rule)}
+  table tr:last-child{border-bottom:0}
+  table td{display:block;padding:2px 0;border:0}
+  table td:first-child{font-weight:700}
+}
+
+/* advisories, lists, footer */
+.advs{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.adv{background:var(--panel);border:1px solid var(--rule);padding:14px 16px;display:flex;flex-direction:column;gap:10px}
+.adv pre{white-space:pre-wrap;font-family:system-ui,sans-serif;font-size:.95rem;margin:0;line-height:1.5;max-height:420px;overflow:auto}
+.btn{font:inherit;font-weight:700;align-self:flex-start;padding:7px 14px;background:var(--accent);color:var(--accent-ink);border:0;border-radius:3px;cursor:pointer}
+ul.plain{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:7px;max-width:74ch}
+ul.plain.big{font-size:1.05rem}
+footer.foot{color:var(--muted);font-size:.88rem;border-top:1px solid var(--rule);padding-block:14px 32px;display:flex;flex-direction:column;gap:8px}
+footer.foot nav{display:flex;flex-wrap:wrap;gap:6px 16px}
+@media (prefers-reduced-motion:no-preference){.chip,.btn{transition:background-color .15s}html{scroll-behavior:smooth}}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="site"><div class="bar"><span class="brand">Cary Arts Center parking &middot; Sun Oct 4</span><nav aria-label="Guide pages"><a href="index.html">Where to park</a><a href="events.html">Events and timing</a><a href="rules.html" aria-current="page">Rules and no-parking streets</a><a href="sources.html">Sources and method</a></nav></div></header>
+<main id="main" class="wrap">
+
+<header class="top"><p class="eyebrow">Parking guide</p><h1>Rules and no-parking streets</h1>
+<p class="date">What applies on Sunday, October 4, 2026</p></header>
+<section aria-labelledby="h-key"><h2 id="h-key">The short version</h2>
+<ul class="plain big">
+<li>Every Town deck, lot and street space is <b>free</b>.</li>
+<li>One-hour and two-hour limits are <b>not in force on a Sunday</b>, unless the sign states other days. Fifteen-minute zones are, except the arts center lot's, which is not enforced during performances.</li>
+<li>A <b>public</b> street with <b>no sign</b> and no yellow curb is legal to park on, except in the places below that need no sign. Private roads and drives are not covered by the Town Code and may tow.</li>
+<li><b>Accessible spaces are enforced at all hours.</b> Where this guide calls a lot unrestricted, that means every space except the marked accessible ones.</li>
+<li>Private lots tow. Stay out of them unless the owner says otherwise.</li></ul></section>
+<section aria-labelledby="h-nosign"><h2 id="h-nosign">Rules that need no sign</h2>
+<p class="sub">These apply on every street in Cary, signed or not (Town Code Sec. 34-94 and 34-103, and N.C. G.S. 20-162).</p>
+<ul class="plain"><li>On a sidewalk, in an intersection, or on a crosswalk.</li><li>In front of a private driveway, or blocking a curb ramp.</li><li>Within 25 ft of the intersection of curb lines at a corner, or within 15 ft of the property lines where there is no curb.</li><li>Within 15 ft of a fire hydrant or the entrance to a fire station, and in any fire lane.</li><li>Within 30 ft of a stop sign, a traffic signal or a flashing beacon.</li><li>Within 15 ft of the entrance to a theater, hotel, hospital or public building. The arts center&#x27;s front door is one.</li><li>Within 15 ft of a mailbox, 9:00 AM to 5:00 PM, except on Sundays and federal holidays.</li><li>Double-parked, in a marked bike lane, or so that a car cannot pass in a marked travel lane.</li><li>In a marked accessible space without a placard or plate, at any hour.</li><li>Outside the marked spaces in a Town lot.</li><li>Within 50 ft of a railroad crossing or underpass.</li><li>Where the car would block traffic: opposite a street excavation or construction site, or on a narrow street where other vehicles could not get past (Sec. 34-94, 34-103(7)).</li><li>On a bridge or other elevated structure (Sec. 34-103(8)).</li></ul><p>Where no sign is posted, park parallel to the curb and within 12 inches of it (Sec. 34-96). A car left on the street for 24 hours or more may be towed (G.S. 20-161(e)), and one left in a Town deck or lot for more than 24 hours counts as abandoned (Sec. 34-208). The Town publishes no plain-language page on unsigned streets; this reading is from the Code itself.</p>
+<p class="src"><a href="https://codelibrary.amlegal.com/codes/cary/latest/cary_nc/0-0-0-64420" target="_blank" rel="noopener">Cary Code of Ordinances, chapter 34, the parking sections (Sec. 34-96 onward)</a> (<a href="https://files.amlegal.com/pdffiles/Cary_pdf/code_CH34.pdf" target="_blank" rel="noopener">PDF of the chapter</a>) &middot; <a href="https://law.justia.com/codes/north-carolina/chapter-20/article-3/section-20-162/" target="_blank" rel="noopener">N.C. General Statutes 20-162</a> &middot; <a href="https://law.justia.com/codes/north-carolina/chapter-20/article-3/section-20-161/" target="_blank" rel="noopener">N.C. General Statutes 20-161</a></p></section>
+<section aria-labelledby="h-rules"><h2 id="h-rules">Rules that apply on a Sunday</h2>
+<div class="tablewrap"><table id="rules"><thead><tr><th scope="col">Rule</th><th scope="col">What it says</th><th scope="col">On Sunday October 4</th><th scope="col">Source</th></tr></thead><tbody><tr><td>Fees</td><td>Every Town of Cary deck, lot and street space is free in 2026. Gates were fitted at the Walnut Street deck from November 2023 and have not been switched on; the Town promises notice before they are. One private lot north of this area, at Chatham Street and Walker Street, charges by phone.</td><td>No charge anywhere on this list.</td><td><a href="https://www.carync.gov/services-publications/parking" target="_blank" rel="noopener">Town parking page</a></td></tr><tr><td>Streets with no sign</td><td>A Cary no-parking rule or time limit binds a driver only where a sign is posted, or for Traffic Schedule 8, where the curb is painted yellow (Sec. 34-67(b), 34-107). This covers public streets only; private roads and drives may tow without a Town sign. Where there is neither, parking is allowed, parallel to the curb and within 12 inches of it (Sec. 34-96).</td><td>Allowed, except in the places listed under Rules that need no sign.</td><td><a href="https://codelibrary.amlegal.com/codes/cary/latest/cary_nc/0-0-0-64420" target="_blank" rel="noopener">Cary Code ch. 34, parking sections</a></td></tr><tr><td>Accessible spaces</td><td>Parking in a marked accessible space without a placard or plate is prohibited (Sec. 34-103).</td><td>Enforced at all hours, every day, in every lot, deck and street. Unrestricted lots on this page mean every space except these.</td><td><a href="https://codelibrary.amlegal.com/codes/cary/latest/cary_nc/0-0-0-64420" target="_blank" rel="noopener">Cary Code ch. 34</a></td></tr><tr><td>No parking at any time</td><td>The published Traffic Schedule 8 lists, without exception: Dry Avenue from S Dixon Avenue to S Academy Street, S Walker Street from Chatham Street to Byrum Street, S Harrison Avenue from Chatham Street to Heater Drive, both sides of Walnut Street east of Kildaire Farm Road, most of Kildaire Farm Road, both sides of E Park Street between S Academy Street and S Walker Street, the north side of W Park Street, the east side of Page Street, and all of Faculty Avenue except one stretch on its north-west side.</td><td>Applies every day.</td><td><a href="https://carync.box.com/s/8mn9r7oivqdgfs8xrv1w9tcsustkvi6v" target="_blank" rel="noopener">Traffic Schedule 8</a></td></tr><tr><td>Marked stalls only</td><td>On S Academy Street from Chatham Street to Dry Avenue, parking is prohibited unless in a marked on-street stall.</td><td>Applies every day. The marked stalls are groups S4 and S8.</td><td><a href="https://carync.box.com/s/8mn9r7oivqdgfs8xrv1w9tcsustkvi6v" target="_blank" rel="noopener">Traffic Schedule 8</a></td></tr><tr><td>Where the record disagrees with itself</td><td>The staff report for the April 10, 2025 change described Dry Avenue, S Walker Street and S Harrison Avenue as stall-only streets; the published schedule bans parking on them outright. The council banned parking on the north side of Byrum Street in June 2024; the published schedule omits it. Dry Avenue between S Academy Street and Kildaire Farm Road has no entry at all.</td><td>The signs on the street decide. Where this page is unsure it says no.</td><td><a href="https://carync.iqm2.com/Citizens/Detail_LegiFile.aspx?ID=7951" target="_blank" rel="noopener">Council item 7951</a>, <a href="https://carync.iqm2.com/Citizens/Detail_LegiFile.aspx?ID=7366" target="_blank" rel="noopener">item 7366</a></td></tr><tr><td>One-hour and two-hour zones</td><td>Sec. 34-105 and 34-106 limit parking between 8:00 AM and 6:00 PM on any day except Sundays and public holidays.</td><td>Not in force, unless the sign states other days. A timed stall can be used for the whole show.</td><td><a href="https://codelibrary.amlegal.com/codes/cary/latest/cary_nc/0-0-0-64385" target="_blank" rel="noopener">Cary Code ch. 34</a></td></tr><tr><td>15-minute zones</td><td>Sec. 34-104 has no Sunday exception.</td><td>In force on the two short zones on S Academy Street and Waldo Street. The 15-minute spaces in the arts center lot are not enforced during performances.</td><td><a href="https://codelibrary.amlegal.com/codes/cary/latest/cary_nc/0-0-0-64385" target="_blank" rel="noopener">Cary Code ch. 34</a></td></tr><tr><td>Decks</td><td>No time limit on a parked car. No overnight parking. Park only in striped spaces. Reserved spaces are for library patrons and Walker tenants, and vehicles in them may be towed at the owner's cost. Trailers and boats are prohibited.</td><td>Use unmarked spaces only. Library spaces are reserved during library hours, 1:00 to 5:00 PM on Sunday, plus half an hour either side.</td><td><a href="https://www.carync.gov/services-publications/parking/parking-deck-rules" target="_blank" rel="noopener">Deck rules</a></td></tr><tr><td>School lots</td><td>A joint-use agreement approved by the council on March 10, 2011 gives the Town the use of all parking at Cary Elementary outside school hours, and of up to 20 spaces in the rear lot during them. It runs for 25 years.</td><td>Free and open to the public on a Sunday, every space except marked accessible spaces, but the tournament will have filled them.</td><td><a href="https://carync.iqm2.com/Citizens/FileOpen.aspx?Type=12&amp;ID=1183" target="_blank" rel="noopener">Council minutes, March 10, 2011</a></td></tr><tr><td>Town lots</td><td>Sec. 34-103(13): park only in marked spaces. Sec. 34-113: parking at a parks and recreation facility is for its patrons.</td><td>Applies.</td><td><a href="https://codelibrary.amlegal.com/codes/cary/latest/cary_nc/0-0-0-64385" target="_blank" rel="noopener">Cary Code ch. 34</a></td></tr><tr><td>Large vehicles</td><td>Sec. 34-112: a vehicle or trailer 80 inches wide or more, or 30 feet long or more, may not park on a street except while loading.</td><td>Applies to a scenery truck or trailer.</td><td><a href="https://codelibrary.amlegal.com/codes/cary/latest/cary_nc/0-0-0-64385" target="_blank" rel="noopener">Cary Code ch. 34</a></td></tr><tr><td>Loading dock</td><td>The arts center's rental guide keeps the dock's yellow-striped areas clear and allows scenery vehicles in the dock on load-in and load-out days only.</td><td>No cast or crew parking at the dock.</td><td><a href="https://www.carync.gov/home/showpublisheddocument/22755/639216112117570000" target="_blank" rel="noopener">Theatre Rental Guide, Town of Cary</a></td></tr><tr><td>Drop-off</td><td>The Town's parking sheet says dropping passengers in front of the building is not allowed. Drop-off is through the arts center lot, by the stairs and ramp.</td><td>Tell patrons to use the west lot for drop-off.</td><td><a href="https://www.carync.gov/recreation-enjoyment/facilities/cary-arts-center/parking" target="_blank" rel="noopener">Arts center parking page</a></td></tr><tr><td>Enforcement</td><td>The Town's December 2024 parking study found that enforcement was not occurring regularly. A visitor reported about 20 ticketed cars near S Harrison Avenue on a festival day in April 2026, and every towing report found is from a private lot.</td><td>Do not rely on leniency. Towing from reserved deck spaces is the stated remedy, and private lots do tow.</td><td>Downtown parking study, December 2024; visitor reports, 2025 and 2026</td></tr></tbody></table></div></section>
+<section aria-labelledby="h-none" id="no-parking"><h2 id="h-none">Streets with no parking</h2>
+<p class="sub">No parking at any time, or treated as no parking by this guide: each card says which. These curbs are inside the search area and hold no legal spaces; they are listed so nobody is sent to them. They are the dashed red lines on the map, along with the no-parking side of streets that allow parking on the other side.</p>
+<div class="cards"><details class="card none" id="g-N1" data-front="92" data-dock="334" data-status="none" open><summary><span class="gid" style="--c:#D2352F">N1</span><span class="nm">Dry Avenue</span><span class="meta"><span class="pill none">No parking</span><span class="walk w" data-f="about 1 min walk to the front door" data-d="about 1 min walk to the dock">about 1 min walk to the front door</span></span></summary><div class="cbody"><p class="where">S Dixon Avenue to Kildaire Farm Road, including the frontage of the arts center.</p><div class="sun"><b>On Sunday, October 4:</b> Treat the whole street as no parking unless signs on the day say otherwise. The Town also asks that nobody stops at the front curb to drop off.</div><div class="cols"><dl class="kv"><dt>Total</dt><dd>0 marked stalls seen</dd><dt>Open to the public</dt><dd>0</dd></dl><dl class="kv"><dt>To the front door</dt><dd><b>90 ft</b> &middot; about 1 min</dd><dt>To the loading dock</dt><dd><b>335 ft</b> &middot; about 1 min</dd><dt>Measured from</dt><dd>curb opposite the front door</dd></dl></div><p><b>Cost and limits:</b> West of S Academy Street, which meets Dry Avenue opposite the front door: no parking at any time (Traffic Schedule 8, effective April 10, 2025). East of S Academy Street, the 200 ft to Kildaire Farm Road: the old ban on both sides was deleted in April 2025 and the published schedule now has no entry. The staff report said parking there would be allowed only in marked stalls. None are marked in the aerial or in street-level imagery of July 29, 2025, which also shows a green P sign on Dry Avenue pointing drivers toward Faculty Avenue and the arts center lot.</p><p class="chg"><b>Changed 2025 to 2026:</b> Changed in April 2025. The arts center&#x27;s own parking page still describes street parking nearby and is out of date.</p><p>Why this stays red although the Code allows an unsigned curb: the stretch east of S Academy Street is only about 200 ft between two corners, the 25 ft corner rule (Sec. 34-103(11)) applies at each end, it starts at the front door, where the 15 ft rule for a theater entrance applies (Sec. 34-103(9)), and the Town asks that no one stops at the front curb. If there is no sign on the day a car there may be legal, but do not plan on it.</p><p class="conf">How we know: Published traffic schedule and council record, which do not fully agree; aerial</p><p class="src">Sources: <a href="https://carync.box.com/s/8mn9r7oivqdgfs8xrv1w9tcsustkvi6v" target="_blank" rel="noopener">Traffic Schedule 8, document of September 1, 2026</a> &middot; <a href="https://carync.iqm2.com/Citizens/Detail_LegiFile.aspx?ID=7951" target="_blank" rel="noopener">Council item 7951, April 10, 2025</a> &middot; <a href="https://www.carync.gov/recreation-enjoyment/facilities/cary-arts-center/parking" target="_blank" rel="noopener">Arts center parking page</a></p><p class="tomap"><a href="index.html?show=N1#map" data-show="N1">Show on the map</a></p></div></details><details class="card none" id="g-N2" data-front="330" data-dock="388" data-status="none" open><summary><span class="gid" style="--c:#D2352F">N2</span><span class="nm">Kildaire Farm Road</span><span class="meta"><span class="pill none">No parking</span><span class="walk w" data-f="about 1 min walk to the front door" data-d="about 1 min walk to the dock">about 1 min walk to the front door</span></span></summary><div class="cbody"><p class="where">East side from Cornwall Road to Walnut Street; west side near Walnut Street and south of Pleasant Avenue; bus and passenger loading zone from Walker Street to Byrum Street.</p><div class="sun"><b>On Sunday, October 4:</b> Treat the whole road as no parking unless signs say otherwise.</div><div class="cols"><dl class="kv"><dt>Total</dt><dd>0</dd><dt>Open to the public</dt><dd>0</dd></dl><dl class="kv"><dt>To the front door</dt><dd><b>330 ft</b> &middot; about 1 min</dd><dt>To the loading dock</dt><dd><b>390 ft</b> &middot; about 1 min</dd><dt>Measured from</dt><dd>curb at the circular lot&#x27;s drive</dd></dl></div><p><b>Cost and limits:</b> No parking at any time on the east side, on the west side for 180 ft south of Walnut Street, and on the west side south of Pleasant Avenue (Traffic Schedule 8). The west side between those two stretches, which is the school&#x27;s frontage, has no entry in the schedule. No parking lane was counted there.</p><p class="chg"><b>Changed 2025 to 2026:</b> The outside lanes from Byrum Street to Shirley Drive were due for repaving from late 2025; completion not found.</p><p>Why the school frontage stays red although it has no schedule entry: the road has no parking lane there, so a parked car would stand in a marked travel lane, which Sec. 34-94 and 34-103(15) forbid with or without a sign.</p><p class="conf">How we know: Published traffic schedule</p><p class="src">Sources: <a href="https://carync.box.com/s/8mn9r7oivqdgfs8xrv1w9tcsustkvi6v" target="_blank" rel="noopener">Traffic Schedule 8, document of September 1, 2026</a> &middot; <a href="https://www.carync.gov/services-publications/plans-publications-reports/traffic-schedules" target="_blank" rel="noopener">Traffic Schedule 8</a></p><p class="tomap"><a href="index.html?show=N2#map" data-show="N2">Show on the map</a></p></div></details><details class="card none" id="g-N3" data-front="391" data-dock="466" data-status="none" open><summary><span class="gid" style="--c:#D2352F">N3</span><span class="nm">Walnut Street</span><span class="meta"><span class="pill none">No parking</span><span class="walk w" data-f="about 1 min walk to the front door" data-d="about 2 min walk to the dock">about 1 min walk to the front door</span></span></summary><div class="cbody"><p class="where">Both sides, from Kildaire Farm Road east.</p><div class="sun"><b>On Sunday, October 4:</b> Applies.</div><div class="cols"><dl class="kv"><dt>Total</dt><dd>0</dd><dt>Open to the public</dt><dd>0</dd></dl><dl class="kv"><dt>To the front door</dt><dd><b>390 ft</b> &middot; about 1 min</dd><dt>To the loading dock</dt><dd><b>465 ft</b> &middot; about 2 min</dd><dt>Measured from</dt><dd>curb at Kildaire Farm Road</dd></dl></div><p><b>Cost and limits:</b> No parking at any time on both sides east of Kildaire Farm Road, and on the south side from Kildaire Farm Road to S Walker Street (Traffic Schedule 8). The aerial shows no parking lane.</p><p class="chg"><b>Changed 2025 to 2026:</b> The houses on the block between Walnut Street, Byrum Street and S Walker Street were demolished for the Avalon apartments: permits issued July 20, 2026, signed off September 22. The building permits were still under review on September 15. Draft traffic plans show a Walnut Street lane closure and S Walker Street closed to through traffic; no record shows them in force, and no closure was posted on September 28.</p><p class="conf">How we know: Traffic schedule</p><p class="src">Sources: <a href="https://www.carync.gov/services-publications/plans-publications-reports/traffic-schedules" target="_blank" rel="noopener">Traffic Schedule 8</a> &middot; <a href="https://maps.wakegov.com/arcgis/rest/services/Imagery/Imagery_2025/MapServer" target="_blank" rel="noopener">Counted from Feb 2025 aerial</a> &middot; <a href="https://carync.iqm2.com/Citizens/Detail_LegiFile.aspx?ID=8556" target="_blank" rel="noopener">Council item 8556, Avalon</a></p><p class="tomap"><a href="index.html?show=N3#map" data-show="N3">Show on the map</a></p></div></details><details class="card none" id="g-N7" data-front="688" data-dock="425" data-status="none" open><summary><span class="gid" style="--c:#D2352F">N7</span><span class="nm">Faculty Avenue, west leg</span><span class="meta"><span class="pill none">No parking</span><span class="walk w" data-f="about 3 min walk to the front door" data-d="about 2 min walk to the dock">about 3 min walk to the front door</span></span></summary><div class="cbody"><p class="where">Between S Harrison Avenue and the school&#x27;s back lot entrance.</p><div class="sun"><b>On Sunday, October 4:</b> Applies.</div><div class="cols"><dl class="kv"><dt>Total</dt><dd>0 (curb would hold about 9)</dd><dt>Open to the public</dt><dd>0</dd></dl><dl class="kv"><dt>To the front door</dt><dd><b>690 ft</b> &middot; about 3 min</dd><dt>To the loading dock</dt><dd><b>425 ft</b> &middot; about 2 min</dd><dt>Measured from</dt><dd>east end, at the school lot entrance</dd></dl></div><p><b>Cost and limits:</b> No parking at any time. Traffic Schedule 8 bans the north-west side from a point 520 ft south of Dry Avenue to S Harrison Avenue, and the whole of the south-east side.</p><p class="conf">How we know: Published traffic schedule; aerial</p><p class="src">Sources: <a href="https://carync.box.com/s/8mn9r7oivqdgfs8xrv1w9tcsustkvi6v" target="_blank" rel="noopener">Traffic Schedule 8, document of September 1, 2026</a> &middot; <a href="https://maps.wakegov.com/arcgis/rest/services/Imagery/Imagery_2025/MapServer" target="_blank" rel="noopener">Counted from Feb 2025 aerial</a></p><p class="tomap"><a href="index.html?show=N7#map" data-show="N7">Show on the map</a></p></div></details><details class="card none" id="g-N5" data-front="892" data-dock="629" data-status="none" open><summary><span class="gid" style="--c:#D2352F">N5</span><span class="nm">S Harrison Avenue</span><span class="meta"><span class="pill none">No parking</span><span class="walk w" data-f="about 3 min walk to the front door" data-d="about 2 min walk to the dock">about 3 min walk to the front door</span></span></summary><div class="cbody"><p class="where">South of W Chatham Street, both sides.</p><div class="sun"><b>On Sunday, October 4:</b> Applies.</div><div class="cols"><dl class="kv"><dt>Total</dt><dd>0 marked stalls seen (curb would hold about 30 near the school and about 19 north of W Park Street)</dd><dt>Open to the public</dt><dd>0</dd></dl><dl class="kv"><dt>To the front door</dt><dd><b>890 ft</b> &middot; about 3 min</dd><dt>To the loading dock</dt><dd><b>630 ft</b> &middot; about 2 min</dd><dt>Measured from</dt><dd>at Faculty Avenue</dd></dl></div><p><b>Cost and limits:</b> No parking at any time: the published Traffic Schedule 8 lists this street without exception, effective April 10, 2025. The staff report for that change described it as parking in marked stalls only. Either way, no stalls are marked here.</p><p class="chg"><b>Changed 2025 to 2026:</b> New in April 2025.</p><p>Faculty Avenue&#x27;s west leg is listed separately as N7.</p><p class="conf">How we know: Published traffic schedule and council record</p><p class="src">Sources: <a href="https://carync.box.com/s/8mn9r7oivqdgfs8xrv1w9tcsustkvi6v" target="_blank" rel="noopener">Traffic Schedule 8, document of September 1, 2026</a> &middot; <a href="https://carync.iqm2.com/Citizens/Detail_LegiFile.aspx?ID=7951" target="_blank" rel="noopener">Council item 7951, April 10, 2025</a></p><p class="tomap"><a href="index.html?show=N5#map" data-show="N5">Show on the map</a></p></div></details><details class="card none" id="g-N4" data-front="968" data-dock="1043" data-status="none" open><summary><span class="gid" style="--c:#D2352F">N4</span><span class="nm">S Walker Street, E Chatham Street to Byrum Street</span><span class="meta"><span class="pill none">No parking</span><span class="walk w" data-f="about 4 min walk to the front door" data-d="about 4 min walk to the dock">about 4 min walk to the front door</span></span></summary><div class="cbody"><p class="where">Both sides, north and south of Walnut Street. The nearest stretch runs from Walnut Street to Byrum Street.</p><div class="sun"><b>On Sunday, October 4:</b> Applies.</div><div class="cols"><dl class="kv"><dt>Total</dt><dd>0 marked stalls seen (curb would hold about 14)</dd><dt>Open to the public</dt><dd>0</dd></dl><dl class="kv"><dt>To the front door</dt><dd><b>970 ft</b> &middot; about 4 min</dd><dt>To the loading dock</dt><dd><b>1,045 ft</b> &middot; about 4 min</dd><dt>Measured from</dt><dd>north end</dd></dl></div><p><b>Cost and limits:</b> No parking at any time: the published Traffic Schedule 8 lists this street without exception, effective April 10, 2025. The staff report for that change described it as parking in marked stalls only. Either way, no stalls are marked here.</p><p class="chg"><b>Changed 2025 to 2026:</b> New in April 2025. The apartment construction site fronts the southern block; see Walnut Street.</p><p>In June 2024 the council created a 15-minute zone for about 4 cars at the turnout beside The Walker. Whether it survived the April 2025 change is not recorded.</p><p class="conf">How we know: Published traffic schedule and council record; aerial</p><p class="src">Sources: <a href="https://carync.box.com/s/8mn9r7oivqdgfs8xrv1w9tcsustkvi6v" target="_blank" rel="noopener">Traffic Schedule 8, document of September 1, 2026</a> &middot; <a href="https://carync.iqm2.com/Citizens/Detail_LegiFile.aspx?ID=7951" target="_blank" rel="noopener">Council item 7951, April 10, 2025</a> &middot; <a href="https://carync.iqm2.com/Citizens/Detail_LegiFile.aspx?ID=7366" target="_blank" rel="noopener">Council item 7366, June 27, 2024</a></p><p class="tomap"><a href="index.html?show=N4#map" data-show="N4">Show on the map</a></p></div></details><details class="card none" id="g-N6" data-front="1126" data-dock="1400" data-status="none" open><summary><span class="gid" style="--c:#D2352F">N6</span><span class="nm">E Park Street, S Academy Street to S Walker Street</span><span class="meta"><span class="pill none">No parking</span><span class="walk w" data-f="about 4 min walk to the front door" data-d="about 5 min walk to the dock">about 4 min walk to the front door</span></span></summary><div class="cbody"><p class="where">Both sides, outside the marked bays listed as S5.</p><div class="sun"><b>On Sunday, October 4:</b> Applies.</div><div class="cols"><dl class="kv"><dt>Total</dt><dd>0</dd><dt>Open to the public</dt><dd>0</dd></dl><dl class="kv"><dt>To the front door</dt><dd><b>1,125 ft</b> &middot; about 4 min</dd><dt>To the loading dock</dt><dd><b>1,400 ft</b> &middot; about 5 min</dd></dl></div><p><b>Cost and limits:</b> No parking at any time outside the marked bays (Traffic Schedule 8).</p><p class="conf">How we know: Published traffic schedule</p><p class="src">Sources: <a href="https://carync.box.com/s/8mn9r7oivqdgfs8xrv1w9tcsustkvi6v" target="_blank" rel="noopener">Traffic Schedule 8, document of September 1, 2026</a></p><p class="tomap"><a href="index.html?show=N6#map" data-show="N6">Show on the map</a></p></div></details></div></section>
+</main>
+<footer class="wrap foot"><p>Prepared for the stage manager&#x27;s use. Desk research only: confirm on site before sending the advisories.</p><p>All distances in feet, rounded to 5 ft. Walking times assume 3 mph.</p><nav aria-label="Guide pages, again"><a href="index.html">Where to park</a><a href="events.html">Events and timing</a><a href="rules.html" aria-current="page">Rules and no-parking streets</a><a href="sources.html">Sources and method</a></nav></footer>
+<script>
+(function(){const h=document.querySelector("header.site");if(!h)return;const f=()=>document.documentElement.style.setProperty("--hdr",h.offsetHeight+"px");f();addEventListener("resize",f);})();
+if (location.hash.startsWith("#g-")) { const c = document.getElementById(location.hash.slice(1)); if (c) { c.open = true; c.scrollIntoView({block: "start"}); } }
+
+</script>
+</body>
+</html>
